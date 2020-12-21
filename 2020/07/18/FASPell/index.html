@@ -1,0 +1,308 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FASPell:A Fast, Adaptable, Simple, Powerful Chinese Spell Checker Based On DAE-Decoder Paradigm | Dioxideme</title><meta name="description" content="FASPell论文阅读"><meta name="keywords" content="nlp,文本纠错,bert,中文拼写检查"><meta name="author" content="Dioxideme"><meta name="copyright" content="Dioxideme"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/rainbow.png"><link rel="canonical" href="https://dioxideme.github.io/2020/07/18/FASPell/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="FASPell:A Fast, Adaptable, Simple, Powerful Chinese Spell Checker Based On DAE-Decoder Paradigm"><meta property="og:url" content="https://dioxideme.github.io/2020/07/18/FASPell/"><meta property="og:site_name" content="Dioxideme"><meta property="og:description" content="FASPell论文阅读"><meta property="og:image" content="https://dioxideme.github.io/images/FASPell/image-20200716003951291-1595080349084.png"><meta property="article:published_time" content="2020-07-18T13:52:17.000Z"><meta property="article:modified_time" content="2020-08-22T14:59:32.912Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  hexoversion: '5.0.2',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: {"limitCount":50,"languages":{"author":"作者: Dioxideme","link":"链接: ","source":"来源: Dioxideme","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true,
+  postUpdate: '2020-08-22 22:59:32'
+}</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img {
+  opacity: 1
+}
+</style></noscript><link rel="stylesheet" href="/css/background.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sviptzk/StaticFile_HEXO@latest/butterfly/css/macblack.css"><meta name="generator" content="Hexo 5.0.2"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" data-lazy-src="/img/head.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">59</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">58</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">49</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 娱乐</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li><li><a class="site-page" href="/Gallery/"><i class="fa-fw fas fa-camera-retro"></i><span> 图片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-link"></i><span> 留言板</span></a></div></div></div></div><div id="body-wrap"><div id="sidebar"><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#FASPell-A-Fast-Adaptable-Simple-Powerful-Chinese-Spell-Checker-Based-On-DAE-Decoder-Paradigm"><span class="toc-number">1.</span> <span class="toc-text">FASPell: A Fast, Adaptable, Simple, Powerful Chinese Spell Checker Based On DAE-Decoder Paradigm</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-number">1.1.</span> <span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-number">1.2.</span> <span class="toc-text">Introduction</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Related-work-and-bottlenecks"><span class="toc-number">1.2.1.</span> <span class="toc-text">Related work and bottlenecks</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Motivation-and-contributions"><span class="toc-number">1.2.2.</span> <span class="toc-text">Motivation and contributions</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Achievements"><span class="toc-number">1.2.3.</span> <span class="toc-text">Achievements</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FASPell"><span class="toc-number">1.3.</span> <span class="toc-text">FASPell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Masked-language-model"><span class="toc-number">1.3.1.</span> <span class="toc-text">Masked language model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Character-similarity"><span class="toc-number">1.3.2.</span> <span class="toc-text">Character similarity</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#visual-similarity"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">visual similarity</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Phonological-similarity"><span class="toc-number">1.3.2.2.</span> <span class="toc-text">Phonological similarity</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Confidence-Similarity-Decode"><span class="toc-number">1.3.3.</span> <span class="toc-text">Confidence-Similarity Decode</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Experiments-and-results"><span class="toc-number">1.4.</span> <span class="toc-text">Experiments and results</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Data-metrics-and-configurations"><span class="toc-number">1.4.1.</span> <span class="toc-text">Data, metrics and configurations</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Performance"><span class="toc-number">1.4.2.</span> <span class="toc-text">Performance</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Filtering-Speed"><span class="toc-number">1.4.3.</span> <span class="toc-text">Filtering Speed</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Exploring-hyper-parameters"><span class="toc-number">1.4.4.</span> <span class="toc-text">Exploring hyper-parameters</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">1.5.</span> <span class="toc-text">Conclusion</span></a></li></ol></li></ol></div></div></div><header class="post-bg" id="page-header" style="background-image: url(/images/FASPell/image-20200716003951291-1595080349084.png)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">Dioxideme</a></span><span class="pull-right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 娱乐</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li><li><a class="site-page" href="/Gallery/"><i class="fa-fw fas fa-camera-retro"></i><span> 图片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-link"></i><span> 留言板</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">FASPell:A Fast, Adaptable, Simple, Powerful Chinese Spell Checker Based On DAE-Decoder Paradigm</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-07-18T13:52:17.000Z" title="发表于 2020-07-18 21:52:17">2020-07-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-08-22T14:59:32.912Z" title="更新于 2020-08-22 22:59:32">2020-08-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">4.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h1 id="FASPell-A-Fast-Adaptable-Simple-Powerful-Chinese-Spell-Checker-Based-On-DAE-Decoder-Paradigm"><a href="#FASPell-A-Fast-Adaptable-Simple-Powerful-Chinese-Spell-Checker-Based-On-DAE-Decoder-Paradigm" class="headerlink" title="FASPell: A Fast, Adaptable, Simple, Powerful Chinese Spell Checker Based On DAE-Decoder Paradigm"></a>FASPell: A Fast, Adaptable, Simple, Powerful Chinese Spell Checker Based On DAE-Decoder Paradigm</h1><p><a target="_blank" rel="noopener" href="https://www.aclweb.org/anthology/D19-5522.pdf">论文地址</a></p>
+<h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>​    开门见山，第一句话就是提出了一种新的中文拼写检查其——FASpell，并且它基于新范式，这种范式包括一个降噪自动编码器（DAE）和一个解码器。这种范式使得<strong>计算更快</strong>，且可以<strong>适应</strong>人或机器产生的简体/繁体中文，有更<strong>简单</strong>的结构，更<strong>强大</strong>的检测和纠正能力。之所以有这四个成就，是因为新方式规避了两个瓶颈：1.DAE使用的是无监督预训练<strong>掩码语言模型</strong>，减少了监督学习需要的数据量；2.解码器有助于消除缺乏灵活性和未充分利用汉字相似性显著特征的<strong>混淆集</strong></p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>介绍了一些早期工作，尽管大多数研究中拼写错误被简化为替换错误，中文拼写检查仍然是艰巨任务，因为单词之间没有定界符，且缺乏形态上的变化，使得任何汉字的句法和语义解释都高度依赖于其上下文。</p>
+<h3 id="Related-work-and-bottlenecks"><a href="#Related-work-and-bottlenecks" class="headerlink" title="Related work and bottlenecks"></a>Related work and bottlenecks</h3><p>以前的中文拼写检查模型都有一个通用范式：将每个汉字的一组固定相似字符用作候选项，然后过滤器选择最佳候选项作为给定词汇的替代项。这种设计面临两个主要瓶颈，且很难成功消除其负面影响：</p>
+<ul>
+<li><p><strong>对于严重资源不足的中文拼写检查数据过拟合</strong></p>
+<p>中文拼写检查数据资源一直存在资源不足的问题。WANG等人一种自动生成伪拼写检查数据的方法，但是当生成的数据达到40K个句子时，他们的模型精度就不提高了。ZHAO等人使用大量的语法规则来筛选候选对象，效果比FASpell更差。</p>
+</li>
+<li><p><strong>混淆集在利用字符相似度方面灵活性不足。</strong></p>
+<p>汉字相似度的特点非常突出，且和产生错误的原因息息相关。然而混淆集在使用时非常麻烦：</p>
+<ul>
+<li><p>不能<strong>灵活</strong>地解决一个场景中的混淆字符在另一个场景中可能不会混淆的问题。如表1所示。wang等人还表示，针对机器的混淆字符和针对人类的可能不同。因此，在给定的混淆集中可能不存在正确的替代候选词，这会对召回率造成影响。此外，如果考虑到更多相似特征来保证召回率，可能会降低精确率。</p>
+</li>
+<li><p>字符相似度利用<strong>不足</strong>。</p>
+<p>由于是通过量化字符相似度的截止阈值来生成混淆集，因此实际上是根据相似度对相似字符进行了不加区分的处理。</p>
+<p><img src= "/img/loading.gif" data-lazy-src="/images/FASPell/image-20200716000825899-1595080349083.png" alt="表1"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Motivation-and-contributions"><a href="#Motivation-and-contributions" class="headerlink" title="Motivation and contributions"></a>Motivation and contributions</h3><p>本文目的是改变范式来规避之前提到的两个瓶颈。图一是本文提出的中文拼写检查模型，新范式的最一般形式包括去噪自动编码器（DAE）和解码器。为了证明这是一个新颖的贡献，本文将其与其他两个范式进行了比较：</p>
+<ul>
+<li>1.与以前中文拼写检查的旧范式相比，DAE解码器的模型也会产生候选，然后过滤候选（通过解码器）。然而候选集是根据上下文动态产生的。如果DAR足够强大，所有上下文合适的候选对象都会被召回，这可以防止使用混淆集导致的不灵活问题。DAE还可以防止过拟合的问题，因为它可以在无监督情况下使用大量自然文本进行训练。此外，解码器可以在不丢失任何信息的情况下利用字符相似性。</li>
+<li>2.DAE的形式是seq2seq，这使得它在机器翻译，语法检查等任务类似于解编码范式，然而，在接编码器范式中，编码器提取语义信息，解码器生成包含这些信息的文本，相反，在DAE中，DAE根据上下文特征从损失文本中重建文本的候选文本，解码器通过合并其他特征来选择最佳的候选文本。</li>
+</ul>
+<p>除此之外，还有两个额外贡献：</p>
+<ul>
+<li>提出了一种更精确的字符相似度量化方法。</li>
+<li>提出了一个有效的解码器，尽可能获得最高的准确率和最小的召回伤害的原则过滤候选对象。</li>
+</ul>
+<p><img src= "/img/loading.gif" data-lazy-src="/images/FASPell/image-20200716003951291-1595080349084.png" alt="图1 模型图"></p>
+<h3 id="Achievements"><a href="#Achievements" class="headerlink" title="Achievements"></a>Achievements</h3><p>FASPell：</p>
+<ul>
+<li><strong>Fast</strong>。模型计算快，无论是在时间消耗还是在时间复杂度，在过滤方面更快</li>
+<li><strong>Adaptable</strong>。适应力强。作者对不同场景下的文本进行了测试：人类文本和机器文本。同时适用于简体和繁体中文，尽管有一个具有挑战性的问题，即繁体中的某些错误用法在简体中文中是正确的。</li>
+<li><strong>Simple</strong>。模型是简单的，如图1所示，只有一个掩码语言模型和一个过滤器。此外，该模型只需要一个小的训练集和一组字符的视觉和语音特征，不需要如混淆集的额外数据。</li>
+<li><strong>Powerful</strong>。该模型性能强，在检测和矫正水平上达到了与先前先进模型类似的F1。还在OCR数据集上获得了高精度。</li>
+</ul>
+<h2 id="FASPell"><a href="#FASPell" class="headerlink" title="FASPell"></a>FASPell</h2><p>如图1所示，该模型采用掩码语言模型作为DAE产生候选，置信相似性解码器来过滤候选。实验证明，进行多轮纠错也是有帮助的。</p>
+<h3 id="Masked-language-model"><a href="#Masked-language-model" class="headerlink" title="Masked language model"></a>Masked language model</h3><p>掩码语言模型会猜测序列化句子中[mask]标记的内容。利用MLM作为DAE来检测和纠正中文拼写错误是很直观的，因为它很符合中文拼写检查任务。在BERT的MLM原始训练中，错误是随机的掩码，80%是特殊标记[MASK],10%是词汇表中随机一个token，10%是原始正确的token。在使用随即令牌作为掩码的情况下，模型实际上学会了如何纠正错误字符；在保留原始令牌的情况下，模型实际上学会了如何检测字符是否错误。为了简单起见，FASPell使用了BERT的MLM架构。</p>
+<p>但是，仅使用预训练的MLM会引起一个问题，即随机掩码引入的错误可能与拼写检查数据中的实际错误非常不同。因此，作者提出了以下方法来对MLM进行微调：</p>
+<ul>
+<li><p>对于没有错误的文本，按照BERT中的原始训练进行</p>
+</li>
+<li><p>对于有错误的文本，按以下两种方式创建训练示例：</p>
+<ul>
+<li>给定一个句子，我们使用其本身来掩盖错误的tokens，并将其目标标签设置为他们对应的正确字符</li>
+<li>为了防止过拟合，还屏蔽了本身没有错误的token，并将其目标标签设置为自己</li>
+</ul>
+<p>两种训练示例的平衡程度大致相同</p>
+</li>
+</ul>
+<p>实验证明，对MLM的预训练在许多下游任务中非常有效，因此有人认为这是FASPell的主要促进因素，但是作者认为不应该归功于MLM。在后文的消融实验中表明，MLM本身只能用作性能很低的中文拼写检查（F1 28.9)，解码器利用字符相似性是必不可少的。</p>
+<h3 id="Character-similarity"><a href="#Character-similarity" class="headerlink" title="Character similarity"></a>Character similarity</h3><p>错误字符通常在视觉或语音上和正确字符相似。比如OCR产生的错误字符具有视觉相似性。本文将相似性计算基于两个开放数据库：<em>Kanji Database Project</em>和<em>Unihan Database</em>，因为他们为所有的CJK语言和CJK统一表意文字提供了形状和发音表示。</p>
+<h4 id="visual-similarity"><a href="#visual-similarity" class="headerlink" title="visual similarity"></a>visual similarity</h4><p><em>Kanji Database Project</em>使用Unicode标准——表意文中描述序列（IDS）来表示字符形状。</p>
+<p>如图2示例，字符的IDS形式上是字符串，实际上是有序树的遍历路径。</p>
+<p><img src= "/img/loading.gif" data-lazy-src="/images/FASPell/image-20200717222242423-1595080349084.png" alt="图2"></p>
+<p>在本文的模型中，仅使用字符串形式的IDS，作者将两个字符之间的视觉相似度定义为他们的IDS表示之间的归一化（由于Levenshtein编辑距离的最大值是所讨论的两个字符串的长度的最大值，因此我们只需将其除以最大长度即可对其进行归一化）Levenshtein编辑距离。归一化的原因有两个，首先，为了方便过滤，相似度的范围最好是0到1.其次，如果一对较复杂的字符与一对较不复杂的字符具有相同的编辑距离，则作者希望较复杂的字符的相似性略高于较不复杂的字符相似性，如表2。</p>
+<p><img src= "/img/loading.gif" data-lazy-src="/images/FASPell/image-20200717223709437-1595080349084.png" alt="表2，普通话（MC），粤语（CC），日语Onyyomi（JO），韩语（K）和越南语（V）"></p>
+<p>本文不适用树形IDS的原因有两个，即使在直观上似乎更有意义，首先，即使目前最先进的算法，树编辑距离的时间复杂度也远大于字符串编辑距离，其次，相关实验表明，使用树和字符串区别不大。</p>
+<h4 id="Phonological-similarity"><a href="#Phonological-similarity" class="headerlink" title="Phonological similarity"></a>Phonological similarity</h4><p>具有相同发音的不同汉字非常普遍，任何CJK语言都是这种情况，因此，如果仅使用一种CJK语言来定于字符发音，则字符对的语音相似性将被限制为几个离散值。然而，更连续的语音相似性是可取的，因为它可以使用于过滤候选单词的曲线更平滑。因此，本文利用了Unihan数据库提供的所有CJK语言的字符发音。要计算两个字符的语音相似度，首先计算所有CJK语言中其发音表示之间的标准化负Levenshtein编辑距离，然后取结果的平均值。因此相似度在0-1之间。</p>
+<h3 id="Confidence-Similarity-Decode"><a href="#Confidence-Similarity-Decode" class="headerlink" title="Confidence-Similarity Decode"></a>Confidence-Similarity Decode</h3><p>许多先前的模型的候选过滤器都是基于为候选字符的多个特征设置阈值和权重，本文提出了一种方法，该方法在获得尽可能高的进度且召回伤害最小的原则下更有效。由于解码器利用上下文置信度和字符相似度，因此将其成为置信度相似度解码器（CSD），其有效性如下：</p>
+<p>首先，考虑最简单的情况，即每个原始字符仅提供一个候选字符。对于与原始字符相同的那些候选，我们不会替代原始字符。对于不同的那些，我们可以绘制一个置信度-相似度散点图。如果将候选者与真实情况进行比较，则该图将类似于图3的图①。我们可以观察到，真正的检测和校正候选者朝着右上角更密集。向左下角提供虚假检测候选者；中间区域中的正确检测和错误校正候选对象。如果绘制一条曲线以过滤掉错误检测的候选对象（图3中的②），然后将其余部分用作替代，我们可以优化字符级精度，而对检测到的字符级召回的危害最小；如果还滤除了正确检测和错误校正候选对象（图3中的图③），我们可以获得相同的校正效果。在FASPell中，我们优化校正性能并使用训练集手动找到过滤曲线，并假设其与相应的测试集保持一致。但是在实践中，我们必须找到两条曲线-每种相似度对应一条曲线，然后与过滤结果取并集。</p>
+<p><img src= "/img/loading.gif" data-lazy-src="/images/FASPell/image-20200717230203401-1595080349084.png" alt="图3"></p>
+<p>现在，考虑c&gt; 1个候选者的情况。为了将其简化为上述最简单的情况，我们根据每个原始字符的上下文置信度对候选者进行排名，并将具有相同等级的候选者归入同一组（即总共c个组）。因此，我们可以为每个候选组找到一个如前所述的过滤器。所有c过滤器的组合进一步减轻了召回的危害，因为考虑了更多的候选者。在图1的示例中，有c = 4组候选对象。我们从排名为1的组中获得正确的替换丰→主，从排名为2的组中获得一个正确的替代→苦，而从其他两个组中获取了一个替代。</p>
+<h2 id="Experiments-and-results"><a href="#Experiments-and-results" class="headerlink" title="Experiments and results"></a>Experiments and results</h2><p>本节首先描述实验用到的数据、指标和模型配置，然后展示了FASPell和先前先进模型的性能对比，此外还显示了从OCR结果中收集的数据的性能以证明模型的适应性。然后比较了和其他模型的速度和超参数对模型影响。</p>
+<h3 id="Data-metrics-and-configurations"><a href="#Data-metrics-and-configurations" class="headerlink" title="Data, metrics and configurations"></a>Data, metrics and configurations</h3><p>本文使用了来源于SIGHAN13-15提供的基准数据集和句子等级的准确率、精确率、召回率和F1。此外还从视频中文字幕的OCR结果中收获了4575个句子（简体4516）。表3展示了详细的数据统计信息。</p>
+<p><img src= "/img/loading.gif" data-lazy-src="/images/FASPell/image-20200718205559317-1595080349084.png" alt="表3"></p>
+<p>本文采用的掩码语言模型是bert提供的。表4给出了本文主要实验中使用的FASPell的其他配置。对于消融实验使用相同的配置，除了删除CSD意外，本文将排名第一的候选项作为默认输出。需要注意的是，没有微调OCR数据的掩码语言模型，因为在初步实验中发现会损害性能。</p>
+<p><img src= "/img/loading.gif" data-lazy-src="/images/FASPell/image-20200718205955665-1595080349084.png" alt="表4 FT是指用于微调的训练集 CSD是指针对CSD的培训 r表示回合数，c表示每个字符的候选数 U是SIGHAN13 15中所有拼写检查数据的并集"></p>
+<h3 id="Performance"><a href="#Performance" class="headerlink" title="Performance"></a>Performance</h3><p>如表6所示，FASPell在检测水平和校正水平均达到了最新的F1性能。它在OCR数据上也达到了相当的精度。OCR数据召回率比较低的原因是即使对于人类来说，许多OCR错误也更难纠正。</p>
+<p>表6还显示了FASPell的所有组件均对其有效性能做出了有效贡献，既没有微调又没有CSD的FASPell本质上是预训练的掩码语言模型。进行微调可以提高召回率，因为FASPell可以了解常见错误及其纠正方法。CSD在降低召回伤害的同时提高了精度，因为这是CSD设计时的原理。</p>
+<h3 id="Filtering-Speed"><a href="#Filtering-Speed" class="headerlink" title="Filtering Speed"></a>Filtering Speed</h3><p>本文根据每句话的绝对时间消耗来衡量中文拼写检查的过滤速度（常见表5）。我们将FASPell的速度与WANG等人的模型进行了比较。表5清楚地表明FASPell更快。其次，为了将FASPell与尚未报告绝对时间消耗的模型进行比较，本文分析了时间复杂度。FASPell的时间复杂度是$O(scmn+sclogc)$，其中s是句子长度，c是候选项数，mn是计算编辑距离，clogc用于对候选项进行排名。zhang的模型不仅限于编辑距离，因此其模型的时间复杂度还有其他因素。因此，由于本文不采用混淆集，因此他们模型的每个字符的候选数比我们的模型大，因此FASPell更快。（后面都是介绍对比）</p>
+<p><img src= "/img/loading.gif" data-lazy-src="/images/FASPell/image-20200718214433461-1595080349084.png" alt="表5"></p>
+<p><img src= "/img/loading.gif" data-lazy-src="/images/FASPell/image-20200718214455481-1595080349084.png" alt="表6"></p>
+<h3 id="Exploring-hyper-parameters"><a href="#Exploring-hyper-parameters" class="headerlink" title="Exploring hyper-parameters"></a>Exploring hyper-parameters</h3><p>首先，仅仅改变表4中的候选者数量，以查看其对性能的影响，如图4所示，当考虑更多候选时，在使精度最大化的同时，还可以调用其他检测和校正，因此，候选增加F1会提高。我们在表4中设置候选数c = 4而不是更大的原因是因为要权衡时间消耗。其次，对表4中的拼写检查轮数执行相同的操作。我们可以在图4中观察到，当轮数为3时，T st14和T st15的校正性能达到峰值。对于T st13和T stocr，该数字分别是1和2。由于FASPell可以在每个回合中实现较高的检测精度，因此有时可以进行更多回合，因此可以在下一回合中检测并纠正上一回合中未发现的错误，而不会错误地检测到过多的非错误。</p>
+<p><img src= "/img/loading.gif" data-lazy-src="/images/FASPell/image-20200718214812246-1595080349084.png" alt="图4"></p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>我们建议使用中文拼写检查工具– FASPell，以达到最先进的性能。它基于DAE解码器范例，仅需要少量的拼写检查数据，并放弃了令人困惑的混淆集概念。以FASPell为例，该范式的每个组件都被证明是有效的。我们在<a target="_blank" rel="noopener" href="https://github.com/iqiyi/FASPell上公开提供我们的代码和数据。未来的工作可能包括研究DAEdecoder范式是否可用于检测和纠正语法错误或其他不太经常研究的汉语拼写错误类型，例如辩证口语=和插入/删除错误。">https://github.com/iqiyi/FASPell上公开提供我们的代码和数据。未来的工作可能包括研究DAEdecoder范式是否可用于检测和纠正语法错误或其他不太经常研究的汉语拼写错误类型，例如辩证口语=和插入/删除错误。</a></p>
+<p>本文常提到的比较模型wang是指<a target="_blank" rel="noopener" href="http://aclweb.org/anthology/D18-1273">这篇论文</a></p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Dioxideme</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://dioxideme.github.io/2020/07/18/FASPell/">https://dioxideme.github.io/2020/07/18/FASPell/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://dioxideme.github.io" target="_blank">Dioxideme</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/nlp/">nlp</a><a class="post-meta__tags" href="/tags/%E6%96%87%E6%9C%AC%E7%BA%A0%E9%94%99/">文本纠错</a><a class="post-meta__tags" href="/tags/bert/">bert</a><a class="post-meta__tags" href="/tags/%E4%B8%AD%E6%96%87%E6%8B%BC%E5%86%99%E6%A3%80%E6%9F%A5/">中文拼写检查</a></div><div class="post_share"><div class="social-share" data-image="/images/FASPell/image-20200716003951291-1595080349084.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/07/19/spellGCN/"><img class="prev-cover" data-lazy-src="https://s1.ax1x.com/2020/07/20/UfMSiD.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">SpellGCN:Incorporating Phonological and Visual Similarities into Language Models for Chinese Spelling Check</div></div></a></div><div class="next-post pull-right"><a href="/2020/07/12/torchtext05/"><img class="next-cover" data-lazy-src="/images/torchtext05/1816627-20191117164102235-608709837.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Torchtext04-Conv2s-卷积序列到序列模型</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/06/30/soft-maskedbert/" title="soft-masked Bert"><img class="relatedPosts_cover" data-lazy-src="/images/soft-maskedbert/image-20200622162935594-1593526640518.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fas fa-history fa-fw"></i> 2020-08-22</div><div class="relatedPosts_title">soft-masked Bert</div></div></a></div><div class="relatedPosts_item"><a href="/2020/07/19/spellGCN/" title="SpellGCN:Incorporating Phonological and Visual Similarities into Language Models for Chinese Spelling Check"><img class="relatedPosts_cover" data-lazy-src="https://s1.ax1x.com/2020/07/20/UfMSiD.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fas fa-history fa-fw"></i> 2020-08-22</div><div class="relatedPosts_title">SpellGCN:Incorporating Phonological and Visual Similarities into Language Models for Chinese Spelling Check</div></div></a></div><div class="relatedPosts_item"><a href="/2020/10/28/Adaptable-Filtering/" title="Adaptable Filtering using Hierarchical Embeddings for Chinese Spell Check"><img class="relatedPosts_cover" data-lazy-src="https://s1.ax1x.com/2020/10/28/B3AoOs.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fas fa-history fa-fw"></i> 2020-10-28</div><div class="relatedPosts_title">Adaptable Filtering using Hierarchical Embeddings for Chinese Spell Check</div></div></a></div><div class="relatedPosts_item"><a href="/2020/10/27/GEC-with-Pairwise-training/" title="Grammatical Error Detection with Self Attention by Pairwise Training"><img class="relatedPosts_cover" data-lazy-src="https://s1.ax1x.com/2020/10/27/BlldRP.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fas fa-history fa-fw"></i> 2020-10-28</div><div class="relatedPosts_title">Grammatical Error Detection with Self Attention by Pairwise Training</div></div></a></div><div class="relatedPosts_item"><a href="/2020/06/30/torchtxt02/" title="torchtext学习02-使用RNN encoder-decoder学习短语表示用于机器翻译"><img class="relatedPosts_cover" data-lazy-src="/images/torchtxt02/seq2seq7.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fas fa-history fa-fw"></i> 2020-08-22</div><div class="relatedPosts_title">torchtext学习02-使用RNN encoder-decoder学习短语表示用于机器翻译</div></div></a></div><div class="relatedPosts_item"><a href="/2020/06/30/torchtext01/" title="torchtext学习01-Pytorch-seq2seq 学习"><img class="relatedPosts_cover" data-lazy-src="/images/torchtext01/seq2seq4.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fas fa-history fa-fw"></i> 2020-08-22</div><div class="relatedPosts_title">torchtext学习01-Pytorch-seq2seq 学习</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 By Dioxideme</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">夜间飞行</div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    loader: {
+      source: {
+        '[tex]/amsCd': '[tex]/amscd'
+      }
+    },
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  var script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><script>function loadValine () {
+  function initValine () {
+    window.valine = new Valine({
+      el: '#vcomment',
+      appId: 'c85fDd7l6v4QCm9VGs8seCeX-gzGzoHsz',
+      appKey: 'OM8j5r9UTaCTY2naNtRtBy9U',
+      placeholder: '评论',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    });
+    if ('nick,mail') { valine.config.requiredFields= 'nick,mail'.split(',') }
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="/js/calendar.js"></script><script src="/js/languages.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="/js/third-party/canvas-nest.js"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/meting@1.2.0/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
+  'title',
+  'meta[name=description]',
+  '#config_change',
+  '#body-wrap',
+  '#rightside-config-hide',
+  '#rightside-config-show',
+  '.js-pjax'
+]
+
+if (false) {
+  pjaxSelectors.unshift('meta[property="og:image"]', 'meta[property="og:title"]', 'meta[property="og:url"]')
+}
+
+const pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+})
+
+document.addEventListener('pjax:complete', function () {
+  refreshFn()
+
+  $('script[data-pjax]').each(function () {
+    $(this).parent().append($(this).remove())
+  })
+
+  GLOBAL_CONFIG.islazyload && lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  if (typeof gtag === 'function') {
+    gtag('config', '', {'page_path': window.location.pathname});
+  }
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+})
+
+document.addEventListener('pjax:send', function () {
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  $(window).off('scroll')
+
+  //reset readmode
+  $('body').hasClass('read-mode') && $('body').removeClass('read-mode')
+
+  //reset font-size
+  $('body').css('font-size') !== originFontSize && $('body').css('font-size', parseFloat(originFontSize))
+})</script></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"right","width":180,"height":360},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body></html>
