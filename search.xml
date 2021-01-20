@@ -4,6 +4,39 @@
   
     
     <entry>
+      <title>java-jvm-JDK监控和故障处理</title>
+      <link href="/2021/01/20/java-jvm-Monitoring-troubleshooting/"/>
+      <url>/2021/01/20/java-jvm-Monitoring-troubleshooting/</url>
+      
+        <content type="html"><![CDATA[<h1 id="JDK命令行工具"><a href="#JDK命令行工具" class="headerlink" title="JDK命令行工具"></a>JDK命令行工具</h1><ul><li><strong><code>jps</code></strong> (JVM Process Status）: 类似 UNIX 的 <code>ps</code> 命令。用户查看所有 Java 进程的启动类、传入<strong>参数</strong>和 Java 虚拟机<strong>参数</strong>等信息；</li><li><strong><code>jstat</code></strong>（ JVM Statistics Monitoring Tool）: 用于收集 HotSpot 虚拟机各方面的<strong>运行数据</strong>;</li><li><strong><code>jinfo</code></strong> (Configuration Info for Java) : Configuration Info forJava,显示<strong>虚拟机配置信息</strong>;</li><li><strong><code>jmap</code></strong> (Memory Map for Java) :<strong>生成堆转储快照</strong>;</li><li><strong><code>jhat</code></strong> (JVM Heap Dump Browser ) : 用于<strong>分析 heapdump 文件</strong>，它会建立一个 HTTP/HTML 服务器，让用户可以在浏览器上查看分析结果;</li><li><strong><code>jstack</code></strong> (Stack Trace for Java):<strong>生成虚拟机当前时刻的线程快照</strong>，线程快照就是当前虚拟机内每一条线程正在执行的方法堆栈的集合。</li></ul><h2 id="jps：查看所有Java进程"><a href="#jps：查看所有Java进程" class="headerlink" title="jps：查看所有Java进程"></a><code>jps</code>：查看所有Java进程</h2><p>类似UNIX的<code>PS</code>命令</p><p><code>jps</code>：显示虚拟机执行<strong>主类名称</strong>以及这些进程的<strong>本地虚拟机唯一 ID</strong>（Local Virtual Machine Identifier,LVMID）。</p><p><code>jps -q</code> ：只输出进程的本地虚拟机唯一 ID。</p><p><code>jps -l</code>:输出主类的全名，如果进程执行的是 Jar 包，输出 Jar 路径。</p><p><code>jps -v</code>：输出虚拟机进程启动时 JVM 参数。</p><p><code>jps -m</code>：输出传递给 Java 进程 main() 函数的参数。</p><h2 id="jstat：监视虚拟机各种运行状态信息"><a href="#jstat：监视虚拟机各种运行状态信息" class="headerlink" title="jstat：监视虚拟机各种运行状态信息"></a><code>jstat</code>：监视虚拟机各种运行状态信息</h2><p><strong><code>jstat</code> 命令使用格式：</strong></p><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jstat -&lt;option&gt; [-<span class="type">t</span>] [-<span class="type">h</span>&lt;<span class="type">lines</span>&gt;] &lt;vmid&gt; [&lt;<span class="built_in">int</span><span class="type">erval</span>&gt; [&lt;<span class="type">count</span>&gt;]]</span><br></pre></td></tr></table></figure><h2 id="jinfo：实时查看调整虚拟机各项参数"><a href="#jinfo：实时查看调整虚拟机各项参数" class="headerlink" title="jinfo：实时查看调整虚拟机各项参数"></a><code>jinfo</code>：实时查看调整虚拟机各项参数</h2><p><code>jinfo vmid</code> :输出当前 jvm 进程的全部参数和系统属性 (第一部分是系统的属性，第二部分是 JVM 的参数)。</p><p><code>jinfo -flag name vmid</code> :输出对应名称的参数的具体值。</p><p><code>jinfo -flag [+|-]name vmid</code> 开启或者关闭对应名称的参数。</p><h2 id="jmap：生成堆转储快照"><a href="#jmap：生成堆转储快照" class="headerlink" title="jmap：生成堆转储快照"></a><code>jmap</code>：生成堆转储快照</h2><p><code>jmap</code>（Memory Map for Java）命令用于生成堆转储快照。</p><p><code>jmap</code> 的作用并不仅仅是为了获取 dump 文件，它还可以<strong>查询 finalizer 执行队列</strong>、<strong>Java 堆和永久代</strong>的详细信息，如空间使用率、当前使用的是哪种收集器等。和<code>jinfo</code>一样，<code>jmap</code>有不少功能在 Windows 平台下也是<strong>受限制</strong>的。</p><h2 id="jhat：分析heapdump文件"><a href="#jhat：分析heapdump文件" class="headerlink" title="jhat：分析heapdump文件"></a><code>jhat</code>：分析heapdump文件</h2><p><strong><code>jhat</code></strong> 用于分析 heapdump 文件，它会建立一个 HTTP/HTML 服务器，让用户可以在浏览器上查看分析结果。</p><h2 id="jstack：生成虚拟机当前时刻的线程快照"><a href="#jstack：生成虚拟机当前时刻的线程快照" class="headerlink" title="jstack：生成虚拟机当前时刻的线程快照"></a><code>jstack</code>：生成虚拟机当前时刻的线程快照</h2><p><code>jstack</code>（Stack Trace for Java）命令用于生成虚拟机当前时刻的<strong>线程快照</strong>。线程快照就是当前虚拟机内每一条线程<strong>正在执行的方法堆栈的集合</strong>.</p><h1 id="JDK可视化分析工具"><a href="#JDK可视化分析工具" class="headerlink" title="JDK可视化分析工具"></a>JDK可视化分析工具</h1><p>JConsole</p><p>Visual VM</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+          <category> JVM </category>
+          
+          <category> JDK监控和故障处理 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> JVM </tag>
+            
+            <tag> JDK监控和故障处理 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>java-垃圾回收</title>
       <link href="/2021/01/15/java-jvm-gc/"/>
       <url>/2021/01/15/java-jvm-gc/</url>
